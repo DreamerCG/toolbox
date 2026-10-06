@@ -21,6 +21,7 @@ except ImportError:
 INSTALLERS = [
     {
         "name": "Linux Loader",
+        "author": "By DreamerCG",
         "tag": "ARCADE · TEKNOPARROT",
         "description": [
             "Installe Linux Loader et ses fichiers système.",
@@ -32,6 +33,7 @@ INSTALLERS = [
     },
     {
         "name": "Toolbox Switch",
+        "author": "By DreamerCG",
         "tag": "NINTENDO SWITCH",
         "description": [
             "Installe ou actualise la toolbox Switch.",
@@ -39,6 +41,28 @@ INSTALLERS = [
             "EmulationStation redémarre à la fin.",
         ],
         "command": "curl -k -sL https://dreamercg.s.gy/switch | bash",
+        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
+    },
+    {
+        "name": "Ultimate Wine Toolbox",
+        "author": "By Thomsonito",
+        "tag": "WINE · WINDOWS GAMES",
+        "description": [
+            "Lance l’installateur Ultimate Wine Toolbox.",
+            "Affiche sa sortie dans la fenêtre de terminal.",
+        ],
+        "command": "curl -fsSL https://bit.ly/ultimate-wine-toolbox | bash",
+        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
+    },
+    {
+        "name": "RGSX",
+        "author": "By RetroGameSets",
+        "tag": "PORTAIL · TÉLÉCHARGEMENTS",
+        "description": [
+            "Installe Retro Game Sets Xtra (RGSX).",
+            "Le portail sera ajouté aux ports Batocera.",
+        ],
+        "command": "curl -L bit.ly/rgsx-install | sh",
         "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
     },
 ]
@@ -57,7 +81,7 @@ RED = (255, 110, 120)
 BACK_BUTTON = pygame.Rect(684, 493, 150, 48)
 LAUNCH_BUTTON = pygame.Rect(852, 493, 198, 48)
 ANSI_ESCAPE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
-MENU_START_Y = 292
+MENU_START_Y = 264
 MENU_CARD_HEIGHT = 70
 MENU_CARD_GAP = 9
 MENU_VISIBLE = 4
@@ -83,7 +107,7 @@ class Toolbox:
         pygame.joystick.init()
         pygame.mouse.set_visible(True)
         self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        pygame.display.set_caption("DreamerCG Toolbox")
+        pygame.display.set_caption("Batocera Ultimate Toolbox")
         self.surface = pygame.Surface((WIDTH, HEIGHT))
         self.scale = min(self.window.get_width() / WIDTH, self.window.get_height() / HEIGHT)
         self.clock = pygame.time.Clock()
@@ -91,14 +115,14 @@ class Toolbox:
         self.small = pygame.font.SysFont("dejavusans", 16)
         self.medium = pygame.font.SysFont("dejavusans", 25, bold=True)
         self.title = pygame.font.SysFont("dejavusans", 43, bold=True)
-        self.hero = pygame.font.SysFont("dejavusans", 58, bold=True)
+        self.hero = pygame.font.SysFont("dejavusans", 30, bold=True)
         self.terminal_font = pygame.font.SysFont("dejavusansmono", 16)
         self.avatar = None
-        avatar_path = Path(__file__).resolve().with_name("avatar.webp")
+        avatar_path = Path(__file__).resolve().with_name("avatar.png")
         try:
             source_avatar = pygame.image.load(str(avatar_path)).convert_alpha()
             aw, ah = source_avatar.get_size()
-            factor = min(46 / aw, 46 / ah)
+            factor = min(170 / aw, 98 / ah)
             size = (max(1, round(aw * factor)), max(1, round(ah * factor)))
             self.avatar = pygame.transform.smoothscale(source_avatar, size)
         except (pygame.error, OSError):
@@ -152,7 +176,7 @@ class Toolbox:
         shade = pygame.Surface((WIDTH, 90), pygame.SRCALPHA)
         shade.fill((5, 10, 20, 175))
         self.surface.blit(shade, (0, HEIGHT - 90))
-        self.text("DREAMERCG TOOLBOX", 48, HEIGHT - 70, WHITE, self.medium)
+        self.text("BATOCERA ULTIMATE TOOLBOX", 48, HEIGHT - 70, WHITE, self.medium)
         self.text("Appuie sur une touche pour continuer", 48, HEIGHT - 39, MUTED, self.small)
         self.present()
 
@@ -176,7 +200,7 @@ class Toolbox:
     def show_update_status(self, message):
         self.surface.fill(BG)
         pygame.draw.circle(self.surface, (12, 36, 50), (WIDTH // 2, 190), 205)
-        self.centered("DREAMERCG TOOLBOX", WIDTH // 2, 310, WHITE, self.title)
+        self.centered("BATOCERA ULTIMATE TOOLBOX", WIDTH // 2, 310, WHITE, self.title)
         self.centered(message, WIDTH // 2, 390, TEAL, self.font)
         self.present()
 
@@ -226,7 +250,7 @@ class Toolbox:
     def install_update_files(self, repository, expected_version):
         app_dir = Path(__file__).resolve().parent
         self.show_update_status(f"Téléchargement de la mise à jour {expected_version}…")
-        allowed = {"toolbox_ui.py", "Logo.jpg", "avatar.webp", "version", "repository"}
+        allowed = {"toolbox_ui.py", "Logo.jpg", "avatar.png", "version", "repository"}
         with tempfile.TemporaryDirectory(prefix=".toolbox-update-", dir=str(app_dir)) as temp_dir:
             stage = Path(temp_dir)
             staged = {}
@@ -253,7 +277,7 @@ class Toolbox:
                 name: (app_dir / name).read_bytes() if (app_dir / name).is_file() else None
                 for name in allowed
             }
-            order = ["toolbox_ui.py", "Logo.jpg", "avatar.webp", "repository", "version"]
+            order = ["toolbox_ui.py", "Logo.jpg", "avatar.png", "repository", "version"]
             try:
                 for name in order:
                     os.replace(staged[name], app_dir / name)
@@ -296,17 +320,10 @@ class Toolbox:
             pygame.draw.line(self.surface, (13, 22, 36), (x, 0), (x, HEIGHT), 1)
         for y in range(0, HEIGHT, 48):
             pygame.draw.line(self.surface, (13, 22, 36), (0, y), (WIDTH, y), 1)
-        self.rounded((48, 36, 50, 50), (17, 49, 62), 15, (36, 96, 99))
         if self.avatar:
-            self.surface.blit(
-                self.avatar,
-                (48 + (50 - self.avatar.get_width()) // 2,
-                 36 + (50 - self.avatar.get_height()) // 2),
-            )
-        else:
-            self.centered("D", 73, 41, TEAL, self.medium)
-        self.text("DREAMERCG", 115, 40, WHITE, self.small)
-        self.text("BATOCERA TOOLBOX", 115, 61, MUTED, self.small)
+            self.surface.blit(self.avatar, (48, (105 - self.avatar.get_height()) // 2))
+        self.text("BATOCERA ULTIMATE", 244, 36, WHITE, self.medium)
+        self.text("TOOLBOX", 245, 64, TEAL, self.small)
         self.text(section, WIDTH - 232, 54, TEAL, self.small)
         pygame.draw.line(self.surface, EDGE, (48, 105), (WIDTH - 48, 105), 1)
 
@@ -317,10 +334,9 @@ class Toolbox:
             self.menu_offset = self.selected - MENU_VISIBLE + 1
         self.menu_offset = max(0, min(self.menu_offset, max(0, len(INSTALLERS) - MENU_VISIBLE)))
         self.chrome()
-        self.text("OUTILS COMMUNAUTAIRES", 76, 126, TEAL, self.small)
-        self.text("Vos installations.", 74, 151, WHITE, self.hero)
-        self.text("Un menu simple, pensé pour le canapé.", 78, 220, MUTED, self.font)
-        self.text("SÉLECTION", 78, 266, MUTED, self.small)
+        self.text("OUTILS COMMUNAUTAIRES — BATOCERA FAN FR", 76, 126, TEAL, self.small)
+        self.text("Tes outils gaming réunis au même endroit.", 74, 164, WHITE, self.hero)
+        self.text("CHOISIS TON OUTIL", 78, 231, MUTED, self.small)
 
         visible_items = INSTALLERS[self.menu_offset:self.menu_offset + MENU_VISIBLE]
         for row, item in enumerate(visible_items):
@@ -334,12 +350,16 @@ class Toolbox:
                              (64, y + 12, 5, 46), border_radius=3)
             self.text(item["name"], 92, y + 7, WHITE, self.medium)
             self.text(item["tag"], 94, y + 39, TEAL if index == 0 else BLUE, self.small)
-            self.text("A" if active else "", 757, y + 21, TEAL, self.medium)
+            if active:
+                self.rounded((727, y + 23, 68, 25), (19, 59, 63), 10, TEAL)
+                label = self.small.render("Valider", True, TEAL)
+                self.surface.blit(label, label.get_rect(center=(761, y + 35)))
 
         item = INSTALLERS[self.selected]
         self.rounded((835, 144, 380, 432), PANEL, 20, EDGE)
         self.text("À PROPOS", 863, 173, MUTED, self.small)
         self.text(item["name"], 862, 207, WHITE, self.medium)
+        self.text(item["author"], 862, 241, TEAL, self.small)
         pygame.draw.line(self.surface, EDGE, (862, 267), (1185, 267), 1)
         description_y = 291
         for paragraph in item["description"]:

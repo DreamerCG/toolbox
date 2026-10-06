@@ -1,4 +1,4 @@
-# DreamerCG Toolbox
+# Batocera Ultimate Toolbox
 
 Interface Pygame plein écran pour lancer les installateurs DreamerCG sur Batocera.
 Navigation clavier, manette et souris. `install.sh` reste à la racine du dépôt ;
@@ -13,7 +13,7 @@ curl -fsSL https://raw.githubusercontent.com/DreamerCG/toolbox/main/install.sh |
 ```
 
 Le script installe l’application dans `/userdata/roms/ports/dcgtoolbox` et crée
-le lanceur `/userdata/roms/ports/DreamerCG Toolbox.sh`. Il ne télécharge que les
+le lanceur `/userdata/roms/ports/Batocera Ultimate Toolbox.sh`. Il ne télécharge que les
 fichiers de `toolbox/`, pas l’archive complète du dépôt.
 
 ## Mises à jour
