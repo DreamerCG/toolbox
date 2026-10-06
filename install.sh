@@ -62,6 +62,60 @@ if [[ -f "$OLD_PORT_SCRIPT" ]]; then
     rm -f -- "$OLD_PORT_SCRIPT"
 fi
 
+python3 - "$PORTS_DIR" <<'PY' || echo "Avertissement : impossible de mettre à jour gamelist.xml."
+import os
+import sys
+import xml.etree.ElementTree as ET
+
+ports_dir = sys.argv[1]
+gamelist_file = os.path.join(ports_dir, "gamelist.xml")
+entry_path = "./Batocera Ultimate Toolbox.sh"
+
+try:
+    if os.path.isfile(gamelist_file):
+        tree = ET.parse(gamelist_file)
+        root = tree.getroot()
+    else:
+        root = ET.Element("gameList")
+        tree = ET.ElementTree(root)
+except (ET.ParseError, OSError) as error:
+    print("Avertissement : gamelist.xml illisible, aucune modification :", error)
+    sys.exit(1)
+
+if root.tag != "gameList":
+    print("Avertissement : gamelist.xml n’a pas de racine gameList, aucune modification.")
+    sys.exit(1)
+
+for game in list(root.findall("game")):
+    if (game.findtext("path") or "").strip() == entry_path:
+        root.remove(game)
+
+game = ET.SubElement(root, "game")
+metadata = {
+    "path": entry_path,
+    "name": "Batocera Ultimate Toolbox",
+    "desc": "Interface de gestion des installateurs communautaires pour Batocera.",
+    "image": "./dcgtoolbox/Logo.jpg",
+    "marquee": "./dcgtoolbox/avatar.png",
+    "thumbnail": "./dcgtoolbox/avatar.png",
+    "developer": "DreamerCG / Thomsonito / RetroGameSets / Foclabroc",
+    "publisher": "DreamerCG",
+    "genre": "Toolbox",
+    "rating": "1.00",
+    "region": "eu",
+    "lang": "fr",
+}
+for tag, value in metadata.items():
+    ET.SubElement(game, tag).text = value
+
+if hasattr(ET, "indent"):
+    ET.indent(tree, space="  ")
+temporary_file = gamelist_file + ".tmp"
+tree.write(temporary_file, encoding="UTF-8", xml_declaration=True)
+os.replace(temporary_file, gamelist_file)
+print("Entrée Batocera Ultimate Toolbox ajoutée à gamelist.xml.")
+PY
+
 curl --fail --silent "http://127.0.0.1:1234/reloadgames" >/dev/null 2>&1 || true
 echo "Batocera Ultimate Toolbox $(cat "$APP_DIR/version") installée dans Ports."
 echo "Lancez Batocera Ultimate Toolbox depuis EmulationStation > Ports."

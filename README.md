@@ -15,6 +15,11 @@ curl -fsSL https://raw.githubusercontent.com/DreamerCG/toolbox/main/install.sh |
 Le script installe l’application dans `/userdata/roms/ports/dcgtoolbox` et crée
 le lanceur `/userdata/roms/ports/Batocera Ultimate Toolbox.sh`. Il ne télécharge que les
 fichiers de `toolbox/`, pas l’archive complète du dépôt.
+Il ajoute aussi une entrée à `/userdata/roms/ports/gamelist.xml` et référence
+`dcgtoolbox/Logo.jpg` ainsi que `dcgtoolbox/avatar.png` pour les médias. Une entrée
+existante pour ce lanceur est remplacée sans toucher aux autres jeux de la liste.
+Pour mettre à jour une installation déjà présente, relancez cette commande afin
+de créer le nouveau lanceur et d’ajouter ses médias à la liste Ports.
 
 ## Mises à jour
 

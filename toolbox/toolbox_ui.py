@@ -65,6 +65,17 @@ INSTALLERS = [
         "command": "curl -L bit.ly/rgsx-install | sh",
         "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
     },
+    {
+        "name": "Foclabroc Toolbox",
+        "author": "By Foclabroc",
+        "tag": "OUTILS COMMUNAUTAIRES",
+        "description": [
+            "Lance l’installateur de la toolbox Foclabroc.",
+            "Affiche sa sortie dans la fenêtre de terminal.",
+        ],
+        "command": "curl -L foclabroc.short.gy/toolbox | bash",
+        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
+    },
 ]
 
 WIDTH, HEIGHT = 1280, 720
@@ -354,6 +365,16 @@ class Toolbox:
                 self.rounded((727, y + 23, 68, 25), (19, 59, 63), 10, TEAL)
                 label = self.small.render("Valider", True, TEAL)
                 self.surface.blit(label, label.get_rect(center=(761, y + 35)))
+
+        hidden_below = len(INSTALLERS) - (self.menu_offset + MENU_VISIBLE)
+        if hidden_below > 0 or self.menu_offset > 0:
+            self.rounded((64, 582, 742, 30), PANEL_HI, 11, EDGE)
+            if hidden_below > 0:
+                noun = "AUTRE INSTALLATEUR" if hidden_below == 1 else "AUTRES INSTALLATEURS"
+                hint = f"↓ {hidden_below} {noun} · DÉFILE VERS LE BAS"
+            else:
+                hint = "↑ REMONTE POUR VOIR LES INSTALLATEURS PRÉCÉDENTS"
+            self.centered(hint, 435, 588, TEAL, self.small)
 
         item = INSTALLERS[self.selected]
         self.rounded((835, 144, 380, 432), PANEL, 20, EDGE)
