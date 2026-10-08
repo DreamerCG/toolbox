@@ -76,6 +76,17 @@ INSTALLERS = [
         "command": "curl -L foclabroc.short.gy/toolbox | bash",
         "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
     },
+    {
+        "name": "Community Game Scraper",
+        "author": "By @ArcadeMaster",
+        "tag": "OUTIL COMMUNAUTAIRE",
+        "description": [
+            "Télécharge et lance l’installateur Community Game Scraper.",
+            "La sortie s’affiche dans cette fenêtre de terminal.",
+        ],
+        "command": "curl -fL https://games.evolink.be/api/teknoparrot/client/unified/install.sh -o /tmp/install-cgs.sh && bash /tmp/install-cgs.sh",
+        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
+    },
 ]
 
 WIDTH, HEIGHT = 1280, 720
