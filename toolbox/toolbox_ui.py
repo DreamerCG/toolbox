@@ -73,7 +73,7 @@ INSTALLERS = [
             "Lance l’installateur de la toolbox Foclabroc.",
             "Affiche sa sortie dans la fenêtre de terminal.",
         ],
-        "command": "curl -L foclabroc.short.gy/toolbox | bash",
+        "command": "curl -L https://raw.githubusercontent.com/foclabroc/toolbox/refs/heads/main/app/install-to-port.sh | bash",
         "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
     },
     {
