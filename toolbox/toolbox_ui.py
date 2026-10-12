@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 import urllib.request
 from pathlib import Path
 
@@ -160,6 +161,7 @@ class Toolbox:
         self.page = "home"
         self.running = True
         self.notice = ""
+        self.update_status = ""
         self.output_item = None
         self.output_lines = []
         self.output_code = None
@@ -228,7 +230,7 @@ class Toolbox:
 
     @staticmethod
     def version_key(value):
-        value = value.strip()
+        value = value.lstrip("\ufeff").strip()
         if not re.fullmatch(r"\d+(?:\.\d+){1,3}", value):
             return None
         parts = [int(part) for part in value.split(".")]
@@ -239,26 +241,40 @@ class Toolbox:
         version_path = app_dir / "version"
         repository_path = app_dir / "repository"
         if not version_path.is_file() or not repository_path.is_file():
+            self.update_status = "VERSION LOCALE INDISPONIBLE"
             return
 
         try:
             repository = repository_path.read_text(encoding="utf-8").strip()
             if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
+                self.update_status = "DÉPÔT DE MISE À JOUR INVALIDE"
                 return
-            local_version = version_path.read_text(encoding="utf-8").strip()
+            local_version = version_path.read_text(encoding="utf-8-sig").strip()
             local_key = self.version_key(local_version)
             if local_key is None:
+                self.update_status = "VERSION LOCALE INVALIDE"
                 return
 
             self.show_update_status(f"Vérification de la version {local_version}…")
             request = urllib.request.Request(
-                f"https://raw.githubusercontent.com/{repository}/main/toolbox/version",
-                headers={"User-Agent": "DreamerCG-Toolbox"},
+                f"https://raw.githubusercontent.com/{repository}/main/toolbox/version?nocache={int(time.time())}",
+                headers={
+                    "User-Agent": "DreamerCG-Toolbox",
+                    "Cache-Control": "no-cache",
+                    "Pragma": "no-cache",
+                },
             )
-            with urllib.request.urlopen(request, timeout=8) as response:
-                remote_version = response.read(64).decode("utf-8", "replace").strip()
+            with urllib.request.urlopen(request, timeout=15) as response:
+                remote_version = response.read(128).decode("utf-8-sig", "replace").strip()
             remote_key = self.version_key(remote_version)
-            if remote_key is None or remote_key <= local_key:
+            if remote_key is None:
+                self.update_status = "VERSION DISTANTE INVALIDE"
+                return
+            if remote_key <= local_key:
+                if remote_key == local_key:
+                    self.update_status = f"VERSION {local_version} · À JOUR"
+                else:
+                    self.update_status = f"LOCALE {local_version} · DISTANTE {remote_version}"
                 return
 
             self.install_update_files(repository, remote_version)
@@ -267,6 +283,7 @@ class Toolbox:
             pygame.quit()
             os.execv(sys.executable, [sys.executable, str(Path(__file__).resolve())])
         except Exception as exc:
+            self.update_status = "VÉRIFICATION DE MISE À JOUR IMPOSSIBLE"
             print(f"Mise à jour DreamerCG Toolbox ignorée : {exc}", file=sys.stderr)
 
     def install_update_files(self, repository, expected_version):
@@ -290,9 +307,9 @@ class Toolbox:
             if staged.keys() != allowed:
                 missing = ", ".join(sorted(allowed - staged.keys()))
                 raise RuntimeError(f"Fichiers manquants dans la mise à jour : {missing}")
-            if staged["version"].read_text(encoding="utf-8").strip() != expected_version:
+            if staged["version"].read_text(encoding="utf-8-sig").strip() != expected_version:
                 raise RuntimeError("La version de l’archive ne correspond pas à la version annoncée.")
-            if staged["repository"].read_text(encoding="utf-8").strip() != repository:
+            if staged["repository"].read_text(encoding="utf-8-sig").strip() != repository:
                 raise RuntimeError("Le dépôt indiqué dans l’archive ne correspond pas.")
 
             previous = {
@@ -358,6 +375,9 @@ class Toolbox:
         self.chrome()
         self.text("OUTILS COMMUNAUTAIRES — BATOCERA FAN FR", 76, 126, TEAL, self.small)
         self.text("Tes outils gaming réunis au même endroit.", 74, 164, WHITE, self.hero)
+        if self.update_status:
+            status_color = ORANGE if "IMPOSSIBLE" in self.update_status or "INVALIDE" in self.update_status else MUTED
+            self.text(self.update_status, 835, 126, status_color, self.small)
         self.text("CHOISIS TON OUTIL", 78, 231, MUTED, self.small)
 
         visible_items = INSTALLERS[self.menu_offset:self.menu_offset + MENU_VISIBLE]
