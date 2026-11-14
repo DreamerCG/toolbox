@@ -29,19 +29,19 @@ if [[ ! -f "$SOURCE_DIR/toolbox_ui.py" || ! -f "$SOURCE_DIR/version" ]]; then
     echo "Téléchargement des fichiers de l’application depuis GitHub…"
     SOURCE_DIR="$WORK/toolbox"
     mkdir -p "$SOURCE_DIR"
-    for file in toolbox_ui.py Logo.jpg avatar.png version repository; do
+    for file in toolbox_ui.py Logo.jpg avatar.png version repository installers.json; do
         URL="https://raw.githubusercontent.com/${REPOSITORY}/${BRANCH}/toolbox/${file}"
         curl --fail --location --silent --show-error --retry 3 "$URL" -o "$SOURCE_DIR/$file"
     done
 fi
 
-for file in toolbox_ui.py Logo.jpg avatar.png version repository; do
+for file in toolbox_ui.py Logo.jpg avatar.png version repository installers.json; do
     [[ -f "$SOURCE_DIR/$file" ]] || { echo "Erreur : fichier manquant : $file"; exit 1; }
 done
 
 mkdir -p "$APP_DIR"
 echo "Installation de la toolbox dans $APP_DIR…"
-for file in toolbox_ui.py Logo.jpg avatar.png repository; do
+for file in toolbox_ui.py Logo.jpg avatar.png repository installers.json; do
     install -m 0644 "$SOURCE_DIR/$file" "$APP_DIR/$file.new"
     mv -f "$APP_DIR/$file.new" "$APP_DIR/$file"
 done
