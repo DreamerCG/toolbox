@@ -183,8 +183,34 @@ class Toolbox:
         app_dir = Path(__file__).resolve().parent
         version_path = app_dir / "version"
         repository_path = app_dir / "repository"
+        installers_path = app_dir / "installers.json"
         if not version_path.is_file() or not repository_path.is_file():
             self.update_status = "VERSION LOCALE INDISPONIBLE"
+            return
+        
+        if not installers_path.is_file():
+            self.update_status = "FICHIER INSTALLERS MANQUANT · MISE À JOUR REQUISE"
+            repository = repository_path.read_text(encoding="utf-8").strip()
+            if re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
+                try:
+                    request = urllib.request.Request(
+                        f"https://raw.githubusercontent.com/{repository}/main/toolbox/version?nocache={int(time.time())}",
+                        headers={
+                            "User-Agent": "DreamerCG-Toolbox",
+                            "Cache-Control": "no-cache",
+                            "Pragma": "no-cache",
+                        },
+                    )
+                    with urllib.request.urlopen(request, timeout=15) as response:
+                        remote_version = response.read(128).decode("utf-8-sig", "replace").strip()
+                    self.install_update_files(repository, remote_version)
+                    self.show_update_status(f"Toolbox mise à jour en version {remote_version}.")
+                    pygame.time.wait(900)
+                    pygame.quit()
+                    os.execv(sys.executable, [sys.executable, str(Path(__file__).resolve())])
+                except Exception as exc:
+                    self.update_status = "IMPOSSIBLE DE RÉCUPÉRER FICHIER INSTALLERS"
+                    print(f"Mise à jour DreamerCG Toolbox ignorée : {exc}", file=sys.stderr)
             return
 
         try:
@@ -232,7 +258,7 @@ class Toolbox:
     def install_update_files(self, repository, expected_version):
         app_dir = Path(__file__).resolve().parent
         self.show_update_status(f"Téléchargement de la mise à jour {expected_version}…")
-        allowed = {"toolbox_ui.py", "Logo.jpg", "avatar.png", "version", "repository"}
+        allowed = {"toolbox_ui.py", "Logo.jpg", "avatar.png", "version", "repository", "installers.json"}
         with tempfile.TemporaryDirectory(prefix=".toolbox-update-", dir=str(app_dir)) as temp_dir:
             stage = Path(temp_dir)
             staged = {}
@@ -259,7 +285,7 @@ class Toolbox:
                 name: (app_dir / name).read_bytes() if (app_dir / name).is_file() else None
                 for name in allowed
             }
-            order = ["toolbox_ui.py", "Logo.jpg", "avatar.png", "repository", "version"]
+            order = ["toolbox_ui.py", "Logo.jpg", "avatar.png", "repository", "installers.json", "version"]
             try:
                 for name in order:
                     os.replace(staged[name], app_dir / name)
