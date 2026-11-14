@@ -239,12 +239,35 @@ class Toolbox:
             if remote_key is None:
                 self.update_status = "VERSION DISTANTE INVALIDE"
                 return
-            if remote_key <= local_key:
-                if remote_key == local_key:
-                    self.update_status = f"VERSION {local_version} · À JOUR"
-                else:
-                    self.update_status = f"LOCALE {local_version} · DISTANTE {remote_version}"
+            if remote_key < local_key:
+                self.update_status = f"LOCALE {local_version} · DISTANTE {remote_version}"
                 return
+            
+            if remote_key == local_key:
+                self.show_update_status(f"Vérification des fichiers pour version {local_version}…")
+                try:
+                    app_dir_files = {name: (app_dir / name).read_bytes() if (app_dir / name).is_file() else None 
+                                     for name in {"toolbox_ui.py", "Logo.jpg", "avatar.png", "repository", "installers.json"}}
+                    
+                    files_to_check = ["toolbox_ui.py", "Logo.jpg", "avatar.png", "repository", "installers.json"]
+                    needs_update = False
+                    
+                    for name in files_to_check:
+                        url = f"https://raw.githubusercontent.com/{repository}/main/toolbox/{name}"
+                        request = urllib.request.Request(url, headers={"User-Agent": "DreamerCG-Toolbox"})
+                        with urllib.request.urlopen(request, timeout=30) as response:
+                            remote_content = response.read(8 * 1024 * 1024 + 1)
+                        
+                        if app_dir_files.get(name) != remote_content:
+                            needs_update = True
+                            break
+                    
+                    if not needs_update:
+                        self.update_status = f"VERSION {local_version} · À JOUR"
+                        return
+                except Exception:
+                    self.update_status = f"VERSION {local_version} · À JOUR"
+                    return
 
             self.install_update_files(repository, remote_version)
             self.show_update_status(f"Toolbox mise à jour en version {remote_version}.")
