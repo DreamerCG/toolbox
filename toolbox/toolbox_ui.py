@@ -239,9 +239,6 @@ class Toolbox:
             if remote_key is None:
                 self.update_status = "VERSION DISTANTE INVALIDE"
                 return
-            if remote_key < local_key:
-                self.update_status = f"LOCALE {local_version} · DISTANTE {remote_version}"
-                return
             
             if remote_key == local_key:
                 self.show_update_status(f"Vérification des fichiers pour version {local_version}…")
@@ -268,7 +265,9 @@ class Toolbox:
                 except Exception:
                     self.update_status = f"VERSION {local_version} · À JOUR"
                     return
-
+            elif remote_key != local_key:
+                self.show_update_status(f"Nouvelle version détectée : {remote_version}")
+            
             self.install_update_files(repository, remote_version)
             self.show_update_status(f"Toolbox mise à jour en version {remote_version}.")
             pygame.time.wait(900)
