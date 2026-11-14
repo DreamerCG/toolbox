@@ -4,9 +4,9 @@
         "author": "By DreamerCG",
         "tag": "ARCADE · TEKNOPARROT",
         "description": [
-            "Installe Linux Loader & Windows Arcade Loader.",
+            "Installe Linux Loader & WaL",
             "Ajoute les réglages TeknoParrot.",
-            "Fusionne les fichiers existants."
+            "Prend en charge Batocera 43 à 44."
         ],
         "command": "curl -Ls https://raw.githubusercontent.com/DreamerCG/linuxloader/main/install.sh | bash",
         "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
