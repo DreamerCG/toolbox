@@ -250,7 +250,7 @@ class Toolbox:
                     needs_update = False
                     
                     for name in files_to_check:
-                        url = f"https://raw.githubusercontent.com/{repository}/main/toolbox/{name}"
+                        url = f"https://raw.githubusercontent.com/{repository}/main/toolbox/{name}?nocache={int(time.time())}"
                         request = urllib.request.Request(url, headers={"User-Agent": "DreamerCG-Toolbox"})
                         with urllib.request.urlopen(request, timeout=30) as response:
                             remote_content = response.read(8 * 1024 * 1024 + 1)
@@ -285,7 +285,7 @@ class Toolbox:
             stage = Path(temp_dir)
             staged = {}
             for name in allowed:
-                url = f"https://raw.githubusercontent.com/{repository}/main/toolbox/{name}"
+                url = f"https://raw.githubusercontent.com/{repository}/main/toolbox/{name}?nocache={int(time.time())}"
                 request = urllib.request.Request(url, headers={"User-Agent": "DreamerCG-Toolbox"})
                 with urllib.request.urlopen(request, timeout=30) as response:
                     contents = response.read(8 * 1024 * 1024 + 1)

@@ -1,6 +1,6 @@
 [
     {
-        "name": "Arcade Launcher",
+        "name": "Arcade Launcher - Linux Loader & Windows Arcade Loader",
         "author": "By DreamerCG",
         "tag": "ARCADE · TEKNOPARROT",
         "description": [
@@ -12,7 +12,7 @@
         "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
     },
     {
-        "name": "Toolbox Switch",
+        "name": "Toolbox Switch (Eden, Citron, etc.)",
         "author": "By DreamerCG",
         "tag": "NINTENDO SWITCH",
         "description": [
@@ -24,7 +24,7 @@
         "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
     },
     {
-        "name": "Kyty pour PS5",
+        "name": "Toolbox PS5 (Kyty, Kyty U59, etc.)",
         "author": "By DreamerCG",
         "tag": "PLAYSTATION 5",
         "description": [
