@@ -4,7 +4,7 @@
         "author": "By DreamerCG",
         "tag": "ARCADE · TEKNOPARROT",
         "description": [
-            "Installe Linux Loader et ses fichiers système.",
+            "Installe Linux Loader & Windows Arcade Loader.",
             "Ajoute les réglages TeknoParrot.",
             "Fusionne les fichiers existants."
         ],
@@ -17,8 +17,7 @@
         "tag": "NINTENDO SWITCH",
         "description": [
             "Installe ou actualise la toolbox Switch.",
-            "Prend en charge Batocera 41 à 44.",
-            "EmulationStation redémarre à la fin."
+            "Prend en charge Batocera 41 à 44."
         ],
         "command": "curl -k -sL https://dreamercg.s.gy/switch | bash",
         "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
@@ -29,8 +28,7 @@
         "tag": "PLAYSTATION 5",
         "description": [
             "Installe ou actualise Kyty pour PS5.",
-            "Prend en charge Batocera 43 à 44.",
-            "EmulationStation redémarre à la fin."
+            "Prend en charge Batocera 43 à 44."
         ],
         "command": "curl -Ls https://raw.githubusercontent.com/DreamerCG/kyty-batocera/main/install.sh | bash",
         "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
@@ -48,7 +46,7 @@
     },
     {
         "name": "Community Game Scraper",
-        "author": "By @ArcadeMaster",
+        "author": "By ArcadeMaster",
         "tag": "OUTIL COMMUNAUTAIRE",
         "description": [
             "Télécharge et lance l'installateur Community Game Scraper.",
