@@ -24,6 +24,18 @@
         "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
     },
     {
+        "name": "Kyty PS5",
+        "author": "By DreamerCG",
+        "tag": "PLAYSTATION 5",
+        "description": [
+            "Installe ou actualise Kyty pour PS5.",
+            "Prend en charge Batocera 43 à 44.",
+            "EmulationStation redémarre à la fin."
+        ],
+        "command": "curl -Ls https://raw.githubusercontent.com/DreamerCG/kyty-batocera/main/install.sh | bash",
+        "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
+    },    
+    {
         "name": "Ultimate Wine Toolbox",
         "author": "By Thomsonito",
         "tag": "WINE · WINDOWS GAMES",
