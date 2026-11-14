@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """DreamerCG Batocera Toolbox: controller and keyboard friendly installer menu."""
+import json
 import os
 import queue
 import re
@@ -19,76 +20,18 @@ except ImportError:
     raise SystemExit(1)
 
 
-INSTALLERS = [
-    {
-        "name": "Linux Loader",
-        "author": "By DreamerCG",
-        "tag": "ARCADE · TEKNOPARROT",
-        "description": [
-            "Installe Linux Loader et ses fichiers système.",
-            "Ajoute les réglages TeknoParrot.",
-            "Fusionne les fichiers existants.",
-        ],
-        "command": "curl -Ls https://raw.githubusercontent.com/DreamerCG/linuxloader/main/install.sh | bash",
-        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
-    },
-    {
-        "name": "Toolbox Switch",
-        "author": "By DreamerCG",
-        "tag": "NINTENDO SWITCH",
-        "description": [
-            "Installe ou actualise la toolbox Switch.",
-            "Prend en charge Batocera 41 à 44.",
-            "EmulationStation redémarre à la fin.",
-        ],
-        "command": "curl -k -sL https://dreamercg.s.gy/switch | bash",
-        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
-    },
-    {
-        "name": "Ultimate Wine Toolbox",
-        "author": "By Thomsonito",
-        "tag": "WINE · WINDOWS GAMES",
-        "description": [
-            "Lance l’installateur Ultimate Wine Toolbox.",
-            "Affiche sa sortie dans la fenêtre de terminal.",
-        ],
-        "command": "curl -fsSL https://bit.ly/ultimate-wine-toolbox | bash",
-        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
-    },
-    {
-        "name": "RGSX",
-        "author": "By RetroGameSets",
-        "tag": "PORTAIL · TÉLÉCHARGEMENTS",
-        "description": [
-            "Installe Retro Game Sets Xtra (RGSX).",
-            "Le portail sera ajouté aux ports Batocera.",
-        ],
-        "command": "curl -L bit.ly/rgsx-install | sh",
-        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
-    },
-    {
-        "name": "Foclabroc Toolbox",
-        "author": "By Foclabroc",
-        "tag": "OUTILS COMMUNAUTAIRES",
-        "description": [
-            "Lance l’installateur de la toolbox Foclabroc.",
-            "Affiche sa sortie dans la fenêtre de terminal.",
-        ],
-        "command": "curl -L https://raw.githubusercontent.com/foclabroc/toolbox/refs/heads/main/app/install-to-port.sh | bash",
-        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
-    },
-    {
-        "name": "Community Game Scraper",
-        "author": "By @ArcadeMaster",
-        "tag": "OUTIL COMMUNAUTAIRE",
-        "description": [
-            "Télécharge et lance l’installateur Community Game Scraper.",
-            "La sortie s’affiche dans cette fenêtre de terminal.",
-        ],
-        "command": "curl -fL https://games.evolink.be/api/teknoparrot/client/unified/install.sh -o /tmp/install-cgs.sh && bash /tmp/install-cgs.sh",
-        "warning": "La sortie et les éventuelles questions de l’installateur s’affichent dans le terminal.",
-    },
-]
+def load_installers():
+    """Load INSTALLERS from JSON file."""
+    json_path = Path(__file__).parent / "installers.json"
+    if not json_path.exists():
+        print(f"Erreur : fichier {json_path} non trouvé.", file=sys.stderr)
+        raise SystemExit(1)
+    
+    with open(json_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+INSTALLERS = load_installers()
 
 WIDTH, HEIGHT = 1280, 720
 BG = (8, 13, 25)
