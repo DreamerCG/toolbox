@@ -23,6 +23,17 @@
         "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
     },
     {
+        "name": "Toolbox Quiver",
+        "author": "By DreamerCG",
+        "tag": "Quiver Recomp",
+        "description": [
+            "Installe ou actualise Quiver Recomp.",
+            "Prend en charge Batocera 43 à 44."
+        ],
+        "command": "curl -L https://raw.githubusercontent.com/DreamerCG/Quiver-Batocera/main/install.sh | bash",
+        "warning": "La sortie et les éventuelles questions de l'installateur s'affichent dans le terminal."
+    },      
+    {
         "name": "Toolbox PS5",
         "author": "By DreamerCG",
         "tag": "PLAYSTATION 5",
